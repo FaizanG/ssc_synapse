@@ -25,9 +25,9 @@ export const metadata: Metadata = {
       "AI-powered catering and event intelligence for Siddique Sons Caterers.",
     images: [
       {
-        url: "/brand/siddique-sons-logo.png",
-        width: 731,
-        height: 372,
+        url: "/brand/siddique-sons-logo-transparent.png",
+        width: 1792,
+        height: 832,
         alt: "Siddique Sons Caterers",
       },
     ],

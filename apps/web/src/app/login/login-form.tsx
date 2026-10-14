@@ -48,13 +48,13 @@ export function LoginForm() {
       noValidate
     >
       <label className="block">
-        <span className="text-sm font-semibold text-slate-800">
+        <span className="text-sm font-semibold text-foreground">
           Email address
         </span>
         <input
           {...form.register("email")}
           autoComplete="email"
-          className="mt-2 h-12 w-full rounded-xl border bg-white px-4 outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100"
+          className="mt-2 h-12 w-full rounded-xl border bg-surface px-4 outline-none transition focus:border-brand-gold focus:ring-4 focus:ring-brand-gold-soft"
           type="email"
         />
         {form.formState.errors.email && (
@@ -64,11 +64,11 @@ export function LoginForm() {
         )}
       </label>
       <label className="block">
-        <span className="text-sm font-semibold text-slate-800">Password</span>
+        <span className="text-sm font-semibold text-foreground">Password</span>
         <input
           {...form.register("password")}
           autoComplete="current-password"
-          className="mt-2 h-12 w-full rounded-xl border bg-white px-4 outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100"
+          className="mt-2 h-12 w-full rounded-xl border bg-surface px-4 outline-none transition focus:border-brand-gold focus:ring-4 focus:ring-brand-gold-soft"
           type="password"
         />
         {form.formState.errors.password && (
@@ -78,14 +78,13 @@ export function LoginForm() {
         )}
       </label>
       <label className="block">
-        <span className="text-sm font-semibold text-slate-800">
-          Business code{" "}
-          <span className="font-normal text-slate-400">optional</span>
+        <span className="text-sm font-semibold text-foreground">
+          Business code <span className="font-normal text-muted">optional</span>
         </span>
         <input
           {...form.register("businessSlug")}
           autoComplete="organization"
-          className="mt-2 h-12 w-full rounded-xl border bg-white px-4 outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100"
+          className="mt-2 h-12 w-full rounded-xl border bg-surface px-4 outline-none transition focus:border-brand-gold focus:ring-4 focus:ring-brand-gold-soft"
           placeholder="siddique-sons"
         />
       </label>

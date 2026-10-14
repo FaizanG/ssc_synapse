@@ -1,13 +1,21 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  --surface: #ffffff;
-  --muted: #64748b;
-  --border: #e2e8f0;
+  --background: #fbf7f0;
+  --foreground: #2b1713;
+  --surface: #fffdf9;
+  --muted: #755f56;
+  --border: #eadfce;
+  --brand-primary: #681b1a;
+  --brand-primary-dark: #300807;
+  --brand-primary-soft: #f5e8e2;
+  --brand-gold: #b57914;
+  --brand-gold-bright: #d59a27;
+  --brand-gold-soft: #fbf1db;
+  --brand-cream: #fff9ed;
   --app-font-sans: "Segoe UI Variable", "Segoe UI", Arial, sans-serif;
-  --app-font-display: "Aptos Display", "Segoe UI Variable Display", "Segoe UI", Arial, sans-serif;
+  --app-font-display:
+    "Aptos Display", "Segoe UI Variable Display", "Segoe UI", Arial, sans-serif;
 }
 
 @theme inline {
@@ -16,6 +24,13 @@
   --color-surface: var(--surface);
   --color-muted: var(--muted);
   --color-border: var(--border);
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-primary-dark: var(--brand-primary-dark);
+  --color-brand-primary-soft: var(--brand-primary-soft);
+  --color-brand-gold: var(--brand-gold);
+  --color-brand-gold-bright: var(--brand-gold-bright);
+  --color-brand-gold-soft: var(--brand-gold-soft);
+  --color-brand-cream: var(--brand-cream);
   --font-sans: var(--app-font-sans);
   --font-display: var(--app-font-display);
 }
@@ -31,12 +46,21 @@ html {
 body {
   min-height: 100vh;
   background:
-    radial-gradient(circle at 12% 0%, rgb(79 70 229 / 0.08), transparent 34rem),
+    radial-gradient(
+      circle at 12% 0%,
+      rgb(181 121 20 / 0.12),
+      transparent 34rem
+    ),
+    radial-gradient(
+      circle at 88% 18%,
+      rgb(104 27 26 / 0.06),
+      transparent 28rem
+    ),
     var(--background);
   color: var(--foreground);
   font-family: var(--app-font-sans);
 }
 
 ::selection {
-  background: rgb(99 102 241 / 0.2);
+  background: rgb(213 154 39 / 0.28);
 }

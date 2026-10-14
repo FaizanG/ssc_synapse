@@ -17,10 +17,14 @@ export function BrandLogo({
 }: BrandLogoProps) {
   return (
     <Image
-      src={compact ? "/brand/ssc-mark.png" : "/brand/siddique-sons-logo.png"}
+      src={
+        compact
+          ? "/brand/ssc-mark.png"
+          : "/brand/siddique-sons-logo-transparent.png"
+      }
       alt={decorative ? "" : "Siddique Sons Caterers"}
-      width={compact ? 512 : 731}
-      height={compact ? 512 : 372}
+      width={compact ? 512 : 1792}
+      height={compact ? 512 : 832}
       priority={priority}
       className={cn("object-contain", className)}
     />

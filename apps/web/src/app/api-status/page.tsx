@@ -25,10 +25,10 @@ export default async function ApiStatusPage() {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl items-center px-6 py-16">
-      <section className="w-full rounded-[2rem] border bg-white p-8 shadow-xl shadow-slate-900/5 sm:p-10">
+      <section className="w-full rounded-[2rem] border bg-surface p-8 shadow-xl shadow-brand-primary/5 sm:p-10">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-slate-950"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-brand-primary"
         >
           <ArrowLeft className="size-4" /> Back
         </Link>
@@ -39,13 +39,11 @@ export default async function ApiStatusPage() {
             <Activity className="size-5" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-slate-500">
-              API readiness
-            </p>
+            <p className="text-sm font-semibold text-muted">API readiness</p>
             <h1 className="mt-1 font-display text-3xl font-extrabold tracking-tight">
               {status}
             </h1>
-            <p className="mt-3 leading-7 text-slate-600">
+            <p className="mt-3 leading-7 text-muted">
               {operational
                 ? "The SSC Synapse API and database are ready to serve requests."
                 : "The API is not reachable or is still starting. Check the backend environment and database connection."}
