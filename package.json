@@ -22,9 +22,9 @@
     "db:seed": "pnpm --filter @ssc/api prisma:seed"
   },
   "devDependencies": {
+    "@railway/cli": "5.68.0",
     "dotenv": "^17.2.3",
     "prettier": "^3.6.2",
-    "railway": "3.13.1",
     "typescript": "^6.0.0"
   }
 }
