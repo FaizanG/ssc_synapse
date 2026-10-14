@@ -1,0 +1,53 @@
+{
+  "name": "@ssc/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/main.js",
+    "start:prod": "node dist/main.js",
+    "lint": "oxlint src test",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:ci": "vitest run --coverage.enabled=false",
+    "prisma:generate": "prisma generate --config ../../prisma.config.ts",
+    "prisma:migrate": "prisma migrate dev --config ../../prisma.config.ts",
+    "prisma:deploy": "prisma migrate deploy --config ../../prisma.config.ts",
+    "prisma:seed": "tsx src/database/seed.ts"
+  },
+  "dependencies": {
+    "@nestjs/common": "^12.1.1",
+    "@nestjs/core": "^12.1.1",
+    "@nestjs/jwt": "^12.0.2",
+    "@nestjs/platform-express": "^12.1.1",
+    "@nestjs/swagger": "^12.0.0",
+    "@prisma/adapter-pg": "7.10.0",
+    "@prisma/client": "7.10.0",
+    "argon2": "^0.44.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^17.4.2",
+    "helmet": "^8.1.0",
+    "pg": "^8.16.3",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@nestjs/testing": "^12.1.1",
+    "@types/cookie-parser": "^1.4.9",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.10.0",
+    "@types/pg": "^8.15.5",
+    "@types/supertest": "^6.0.3",
+    "oxlint": "^1.18.0",
+    "prisma": "7.10.0",
+    "supertest": "^7.1.4",
+    "tsx": "^4.20.6",
+    "typescript": "^6.0.0",
+    "vitest": "^4.0.3"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "SSC Synapse",
+  "short_name": "SSC Synapse",
+  "description": "AI-powered catering and event intelligence for Siddique Sons Caterers.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/brand/ssc-mark.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

@@ -1,0 +1,349 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../apps/api/src/generated/prisma"
+  moduleFormat = "esm"
+  runtime      = "nodejs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum BusinessStatus {
+  ACTIVE
+  SUSPENDED
+  ARCHIVED
+}
+
+enum UserStatus {
+  INVITED
+  ACTIVE
+  DISABLED
+}
+
+enum MembershipStatus {
+  INVITED
+  ACTIVE
+  DISABLED
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  REVOKED
+  EXPIRED
+}
+
+enum LoginOutcome {
+  SUCCESS
+  INVALID_CREDENTIALS
+  ACCOUNT_DISABLED
+  BUSINESS_NOT_FOUND
+  RATE_LIMITED
+}
+
+enum JobStatus {
+  PENDING
+  PROCESSING
+  SUCCEEDED
+  FAILED
+  DEAD_LETTER
+}
+
+model Business {
+  id                 String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug               String                  @unique @db.VarChar(80)
+  legalName          String                  @db.VarChar(200)
+  displayName        String                  @db.VarChar(160)
+  status             BusinessStatus          @default(ACTIVE)
+  defaultCurrency    String                  @default("PKR") @db.Char(3)
+  timezone           String                  @default("Asia/Karachi") @db.VarChar(64)
+  createdAt          DateTime                @default(now()) @db.Timestamptz(6)
+  updatedAt          DateTime                @updatedAt @db.Timestamptz(6)
+  settings           BusinessSettings?
+  memberships        BusinessMembership[]
+  roles              Role[]
+  invitations        UserInvitation[]
+  loginAttempts      LoginAttempt[]
+  auditLogs          AuditLog[]
+  outboxMessages     OutboxMessage[]
+  jobs               Job[]
+  idempotencyRecords IdempotencyRecord[]
+
+  @@index([status])
+  @@map("businesses")
+}
+
+model BusinessSettings {
+  businessId              String   @id @db.Uuid
+  locale                  String   @default("en-PK") @db.VarChar(20)
+  quotationPrefix         String   @default("QUO") @db.VarChar(12)
+  invoicePrefix           String   @default("INV") @db.VarChar(12)
+  defaultQuoteValidityDays Int      @default(14)
+  financialYearStartMonth Int      @default(7)
+  createdAt               DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt               DateTime @updatedAt @db.Timestamptz(6)
+  business                Business @relation(fields: [businessId], references: [id], onDelete: Restrict)
+
+  @@map("business_settings")
+}
+
+model User {
+  id                  String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email               String               @db.VarChar(320)
+  emailNormalized     String               @unique @db.VarChar(320)
+  passwordHash        String?              @db.VarChar(255)
+  fullName            String               @db.VarChar(160)
+  phone               String?              @db.VarChar(40)
+  status              UserStatus           @default(INVITED)
+  lastLoginAt         DateTime?             @db.Timestamptz(6)
+  createdAt           DateTime              @default(now()) @db.Timestamptz(6)
+  updatedAt           DateTime              @updatedAt @db.Timestamptz(6)
+  memberships         BusinessMembership[]
+  sessions            AuthSession[]
+  passwordResetTokens PasswordResetToken[]
+  invitationsCreated  UserInvitation[]      @relation("InvitationCreator")
+  auditLogs           AuditLog[]            @relation("AuditActor")
+  loginAttempts       LoginAttempt[]
+
+  @@index([status])
+  @@map("users")
+}
+
+model BusinessMembership {
+  id                  String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  businessId          String           @db.Uuid
+  userId              String           @db.Uuid
+  status              MembershipStatus @default(INVITED)
+  title               String?          @db.VarChar(120)
+  financialVisibility Boolean          @default(false)
+  joinedAt            DateTime?        @db.Timestamptz(6)
+  createdAt           DateTime         @default(now()) @db.Timestamptz(6)
+  updatedAt           DateTime         @updatedAt @db.Timestamptz(6)
+  business            Business         @relation(fields: [businessId], references: [id], onDelete: Restrict)
+  user                User             @relation(fields: [userId], references: [id], onDelete: Restrict)
+  roles               MembershipRole[]
+
+  @@unique([businessId, userId])
+  @@index([userId, status])
+  @@index([businessId, status])
+  @@map("business_memberships")
+}
+
+model Role {
+  id              String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  businessId      String?              @db.Uuid
+  key             String               @unique @db.VarChar(120)
+  name            String               @db.VarChar(100)
+  description     String?              @db.VarChar(300)
+  isSystem        Boolean              @default(false)
+  createdAt       DateTime             @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime             @updatedAt @db.Timestamptz(6)
+  business        Business?            @relation(fields: [businessId], references: [id], onDelete: Restrict)
+  memberships     MembershipRole[]
+  permissions     RolePermission[]
+  invitationRoles InvitationRole[]
+
+  @@index([businessId, isSystem])
+  @@map("roles")
+}
+
+model Permission {
+  id          String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  key         String           @unique @db.VarChar(120)
+  module      String           @db.VarChar(80)
+  description String           @db.VarChar(300)
+  riskLevel   Int              @default(1)
+  roles       RolePermission[]
+
+  @@index([module])
+  @@map("permissions")
+}
+
+model MembershipRole {
+  membershipId String             @db.Uuid
+  roleId       String             @db.Uuid
+  membership   BusinessMembership @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+  role         Role               @relation(fields: [roleId], references: [id], onDelete: Restrict)
+
+  @@id([membershipId, roleId])
+  @@index([roleId])
+  @@map("membership_roles")
+}
+
+model RolePermission {
+  roleId       String     @db.Uuid
+  permissionId String     @db.Uuid
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Restrict)
+
+  @@id([roleId, permissionId])
+  @@index([permissionId])
+  @@map("role_permissions")
+}
+
+model AuthSession {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId           String    @db.Uuid
+  businessId       String    @db.Uuid
+  membershipId     String    @db.Uuid
+  tokenHash        String    @unique @db.Char(64)
+  familyId         String    @db.Uuid
+  expiresAt        DateTime  @db.Timestamptz(6)
+  revokedAt        DateTime? @db.Timestamptz(6)
+  revokeReason     String?   @db.VarChar(160)
+  lastRotatedAt    DateTime  @default(now()) @db.Timestamptz(6)
+  ipHash           String?   @db.Char(64)
+  userAgent        String?   @db.VarChar(500)
+  createdAt        DateTime  @default(now()) @db.Timestamptz(6)
+  user             User      @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([userId, revokedAt, expiresAt])
+  @@index([familyId])
+  @@index([businessId, membershipId])
+  @@map("auth_sessions")
+}
+
+model PasswordResetToken {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String    @db.Uuid
+  tokenHash String    @unique @db.Char(64)
+  expiresAt DateTime  @db.Timestamptz(6)
+  usedAt    DateTime? @db.Timestamptz(6)
+  createdAt DateTime  @default(now()) @db.Timestamptz(6)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+  @@map("password_reset_tokens")
+}
+
+model UserInvitation {
+  id              String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  businessId      String           @db.Uuid
+  email           String           @db.VarChar(320)
+  emailNormalized String           @db.VarChar(320)
+  fullName        String?          @db.VarChar(160)
+  tokenHash       String           @unique @db.Char(64)
+  status          InvitationStatus @default(PENDING)
+  expiresAt       DateTime         @db.Timestamptz(6)
+  acceptedAt      DateTime?        @db.Timestamptz(6)
+  invitedById     String           @db.Uuid
+  createdAt       DateTime         @default(now()) @db.Timestamptz(6)
+  business        Business         @relation(fields: [businessId], references: [id], onDelete: Restrict)
+  invitedBy       User             @relation("InvitationCreator", fields: [invitedById], references: [id], onDelete: Restrict)
+  roles           InvitationRole[]
+
+  @@index([businessId, emailNormalized, status])
+  @@index([expiresAt, status])
+  @@map("user_invitations")
+}
+
+model InvitationRole {
+  invitationId String         @db.Uuid
+  roleId       String         @db.Uuid
+  invitation   UserInvitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  role         Role           @relation(fields: [roleId], references: [id], onDelete: Restrict)
+
+  @@id([invitationId, roleId])
+  @@index([roleId])
+  @@map("invitation_roles")
+}
+
+model LoginAttempt {
+  id                   String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  businessId           String?      @db.Uuid
+  userId               String?      @db.Uuid
+  identifierNormalized String       @db.VarChar(320)
+  outcome              LoginOutcome
+  ipHash               String?      @db.Char(64)
+  userAgent            String?      @db.VarChar(500)
+  createdAt            DateTime     @default(now()) @db.Timestamptz(6)
+  business             Business?    @relation(fields: [businessId], references: [id], onDelete: SetNull)
+  user                 User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([identifierNormalized, createdAt])
+  @@index([businessId, createdAt])
+  @@map("login_attempts")
+}
+
+model AuditLog {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  businessId    String    @db.Uuid
+  actorId       String?   @db.Uuid
+  sessionId     String?   @db.Uuid
+  action        String    @db.VarChar(160)
+  entityType    String    @db.VarChar(100)
+  entityId      String?   @db.Uuid
+  beforeSummary Json?
+  afterSummary  Json?
+  ipHash        String?   @db.Char(64)
+  correlationId String?   @db.VarChar(128)
+  createdAt     DateTime  @default(now()) @db.Timestamptz(6)
+  business      Business  @relation(fields: [businessId], references: [id], onDelete: Restrict)
+  actor         User?     @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([businessId, entityType, entityId, createdAt])
+  @@index([businessId, actorId, createdAt])
+  @@map("audit_logs")
+}
+
+model OutboxMessage {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  businessId    String?   @db.Uuid
+  eventType     String    @db.VarChar(160)
+  aggregateType String    @db.VarChar(100)
+  aggregateId   String?   @db.Uuid
+  payload       Json
+  occurredAt    DateTime  @default(now()) @db.Timestamptz(6)
+  availableAt   DateTime  @default(now()) @db.Timestamptz(6)
+  processedAt   DateTime? @db.Timestamptz(6)
+  attempts      Int       @default(0)
+  lastError     String?   @db.Text
+  business      Business? @relation(fields: [businessId], references: [id], onDelete: Restrict)
+
+  @@index([processedAt, availableAt])
+  @@index([businessId, occurredAt])
+  @@map("outbox_messages")
+}
+
+model Job {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  businessId       String?   @db.Uuid
+  type             String    @db.VarChar(120)
+  payload          Json
+  status           JobStatus @default(PENDING)
+  runAt            DateTime  @default(now()) @db.Timestamptz(6)
+  leaseOwner       String?   @db.VarChar(120)
+  leaseExpiresAt   DateTime? @db.Timestamptz(6)
+  attempts         Int       @default(0)
+  maxAttempts      Int       @default(5)
+  deduplicationKey String?   @unique @db.VarChar(200)
+  lastError        String?   @db.Text
+  createdAt        DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt        DateTime  @updatedAt @db.Timestamptz(6)
+  business         Business? @relation(fields: [businessId], references: [id], onDelete: Restrict)
+
+  @@index([status, runAt])
+  @@index([leaseExpiresAt])
+  @@map("jobs")
+}
+
+model IdempotencyRecord {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  businessId     String?   @db.Uuid
+  scope          String    @db.VarChar(80)
+  operation      String    @db.VarChar(160)
+  key            String    @db.VarChar(160)
+  requestHash    String    @db.Char(64)
+  responseStatus Int?
+  responseBody   Json?
+  resourceType   String?   @db.VarChar(100)
+  resourceId     String?   @db.Uuid
+  expiresAt      DateTime  @db.Timestamptz(6)
+  createdAt      DateTime  @default(now()) @db.Timestamptz(6)
+  business       Business? @relation(fields: [businessId], references: [id], onDelete: Restrict)
+
+  @@unique([scope, operation, key])
+  @@index([expiresAt])
+  @@map("idempotency_records")
+}

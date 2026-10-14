@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: ssc-synapse-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ssc_synapse
+      POSTGRES_USER: ssc_synapse
+      POSTGRES_PASSWORD: ssc_synapse
+    ports:
+      - "15432:5432"
+    volumes:
+      - ssc_synapse_postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ssc_synapse -d ssc_synapse"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  ssc_synapse_postgres:

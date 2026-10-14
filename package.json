@@ -1,0 +1,30 @@
+{
+  "name": "ssc-synapse",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.32.1",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter @ssc/api --filter @ssc/web dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck && tsc -p tsconfig.iac.json",
+    "test": "pnpm -r test",
+    "test:ci": "pnpm -r test:ci",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "db:generate": "pnpm --filter @ssc/api prisma:generate",
+    "db:migrate": "pnpm --filter @ssc/api prisma:migrate",
+    "db:deploy": "pnpm --filter @ssc/api prisma:deploy",
+    "db:seed": "pnpm --filter @ssc/api prisma:seed"
+  },
+  "devDependencies": {
+    "dotenv": "^17.2.3",
+    "prettier": "^3.6.2",
+    "railway": "3.13.1",
+    "typescript": "^6.0.0"
+  }
+}
