@@ -1,5 +1,6 @@
 import {
   defineRailway,
+  github,
   postgres,
   preserve,
   project,
@@ -9,6 +10,7 @@ import {
 export default defineRailway(() => {
   const database = postgres("postgres");
   const api = service("api", {
+    source: github("FaizanG/ssc_synapse", { branch: "main" }),
     build:
       "corepack enable && pnpm install --frozen-lockfile && pnpm db:generate && pnpm --filter @ssc/api build",
     start: "pnpm --filter @ssc/api start:prod",
@@ -28,6 +30,7 @@ export default defineRailway(() => {
   });
 
   const web = service("web", {
+    source: github("FaizanG/ssc_synapse", { branch: "main" }),
     build:
       "corepack enable && pnpm install --frozen-lockfile && pnpm --filter @ssc/web build",
     start: "pnpm --filter @ssc/web start",
