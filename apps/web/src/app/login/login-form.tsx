@@ -43,7 +43,7 @@ export function LoginForm() {
 
   return (
     <form
-      className="mt-9 space-y-5"
+      className="mt-7 space-y-5 sm:mt-9"
       onSubmit={form.handleSubmit(onSubmit)}
       noValidate
     >
@@ -54,7 +54,7 @@ export function LoginForm() {
         <input
           {...form.register("email")}
           autoComplete="email"
-          className="mt-2 h-12 w-full rounded-xl border bg-surface px-4 outline-none transition focus:border-brand-gold focus:ring-4 focus:ring-brand-gold-soft"
+          className="mt-2 h-12 w-full rounded-xl border bg-surface px-4 text-base outline-none transition focus:border-brand-gold focus:ring-4 focus:ring-brand-gold-soft"
           type="email"
         />
         {form.formState.errors.email && (
@@ -68,7 +68,7 @@ export function LoginForm() {
         <input
           {...form.register("password")}
           autoComplete="current-password"
-          className="mt-2 h-12 w-full rounded-xl border bg-surface px-4 outline-none transition focus:border-brand-gold focus:ring-4 focus:ring-brand-gold-soft"
+          className="mt-2 h-12 w-full rounded-xl border bg-surface px-4 text-base outline-none transition focus:border-brand-gold focus:ring-4 focus:ring-brand-gold-soft"
           type="password"
         />
         {form.formState.errors.password && (
@@ -84,7 +84,7 @@ export function LoginForm() {
         <input
           {...form.register("businessSlug")}
           autoComplete="organization"
-          className="mt-2 h-12 w-full rounded-xl border bg-surface px-4 outline-none transition focus:border-brand-gold focus:ring-4 focus:ring-brand-gold-soft"
+          className="mt-2 h-12 w-full rounded-xl border bg-surface px-4 text-base outline-none transition focus:border-brand-gold focus:ring-4 focus:ring-brand-gold-soft"
           placeholder="siddique-sons"
         />
       </label>

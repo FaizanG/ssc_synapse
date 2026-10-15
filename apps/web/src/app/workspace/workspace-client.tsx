@@ -70,7 +70,7 @@ export function WorkspaceClient() {
 
   if (!profile) {
     return (
-      <main className="grid min-h-screen place-items-center bg-brand-cream">
+      <main className="grid min-h-dvh place-items-center bg-brand-cream px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-[max(1rem,env(safe-area-inset-top))]">
         <div
           className="flex items-center gap-3 text-sm font-semibold text-muted"
           role="status"
@@ -83,18 +83,18 @@ export function WorkspaceClient() {
   }
 
   return (
-    <main className="min-h-screen bg-brand-cream p-6 lg:p-10">
+    <main className="min-h-dvh bg-brand-cream px-3 pb-[max(1rem,env(safe-area-inset-bottom))] pt-[max(0.75rem,env(safe-area-inset-top))] sm:p-6 lg:p-10">
       <div className="mx-auto max-w-7xl">
-        <header className="flex flex-col gap-5 rounded-2xl border bg-surface px-5 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-4">
-            <div className="rounded-xl px-1 py-1">
-              <BrandLogo priority className="h-14 w-auto sm:h-16" />
+        <header className="flex items-center justify-between gap-3 rounded-[1.25rem] border bg-surface px-4 py-3 shadow-sm sm:px-5 sm:py-4">
+          <div className="flex min-w-0 items-center gap-4">
+            <div className="min-w-0 rounded-xl px-1 py-1">
+              <BrandLogo priority className="h-12 w-auto max-w-full sm:h-16" />
             </div>
             <p className="hidden text-xs font-semibold uppercase tracking-[0.14em] text-muted md:block">
               {profile.business.name}
             </p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex shrink-0 items-center gap-3">
             <div className="hidden text-right sm:block">
               <p className="text-sm font-bold text-foreground">
                 {profile.user.fullName}
@@ -103,20 +103,26 @@ export function WorkspaceClient() {
                 {profile.membership.roles.map((role) => role.name).join(", ")}
               </p>
             </div>
-            <Button variant="secondary" onClick={signOut} disabled={signingOut}>
+            <Button
+              className="h-11 px-3 sm:px-5"
+              variant="secondary"
+              onClick={signOut}
+              disabled={signingOut}
+              aria-label="Sign out"
+            >
               {signingOut ? (
                 <LoaderCircle className="size-4 animate-spin" />
               ) : (
                 <LogOut className="size-4" />
               )}
-              Sign out
+              <span className="hidden min-[380px]:inline">Sign out</span>
             </Button>
           </div>
         </header>
 
-        <section className="mt-8 grid gap-5 lg:grid-cols-[1.4fr_1fr]">
-          <article className="rounded-2xl border bg-surface p-6 shadow-sm sm:p-8">
-            <div className="flex items-center justify-between">
+        <section className="mt-5 grid min-w-0 gap-4 sm:mt-8 sm:gap-5 lg:grid-cols-[1.4fr_1fr]">
+          <article className="min-w-0 rounded-2xl border bg-surface p-5 shadow-sm sm:p-8">
+            <div className="flex items-center justify-between gap-3">
               <div className="grid size-10 place-items-center rounded-xl bg-brand-gold-soft text-brand-primary">
                 <LayoutDashboard className="size-5" />
               </div>
@@ -124,7 +130,7 @@ export function WorkspaceClient() {
                 Foundation active
               </span>
             </div>
-            <h1 className="mt-8 max-w-xl font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
+            <h1 className="mt-7 max-w-xl font-display text-2xl font-extrabold tracking-tight sm:mt-8 sm:text-4xl">
               Welcome back, {profile.user.fullName.split(" ")[0]}.
             </h1>
             <p className="mt-3 max-w-2xl leading-7 text-muted">
@@ -132,15 +138,15 @@ export function WorkspaceClient() {
               Synapse API. Customer and event workflows are the next vertical
               slice.
             </p>
-            <div className="mt-8 flex items-center gap-3 rounded-xl border border-brand-gold/25 bg-brand-gold-soft px-4 py-3 text-sm text-brand-primary">
-              <ShieldCheck className="size-5 shrink-0 text-brand-gold" />
+            <div className="mt-7 flex items-start gap-3 rounded-xl border border-brand-gold/25 bg-brand-gold-soft px-4 py-3 text-sm leading-6 text-brand-primary sm:mt-8 sm:items-center">
+              <ShieldCheck className="mt-0.5 size-5 shrink-0 text-brand-gold sm:mt-0" />
               <span>
                 {profile.permissions.length} permissions active for this session
               </span>
             </div>
           </article>
 
-          <aside className="rounded-2xl bg-brand-primary-dark p-6 text-white shadow-xl shadow-brand-primary/10 sm:p-8">
+          <aside className="min-w-0 rounded-2xl bg-brand-primary-dark p-5 text-white shadow-xl shadow-brand-primary/10 sm:p-8">
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-brand-gold-bright">
               Next vertical slice
             </p>
@@ -153,7 +159,7 @@ export function WorkspaceClient() {
                 return (
                   <div
                     key={module.name}
-                    className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4"
+                    className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3.5 sm:p-4"
                   >
                     <Icon className="size-5 shrink-0 text-brand-gold-bright" />
                     <div className="min-w-0 flex-1">
