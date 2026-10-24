@@ -1,15 +1,17 @@
-import "dotenv/config";
 import "reflect-metadata";
 
 import { Logger, ValidationPipe, VersioningType } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
 import helmet from "helmet";
 
 import { AppModule } from "./app.module.js";
 import { ApiExceptionFilter } from "./common/filters/http-exception.filter.js";
 import { getEnvironment } from "./config/environment.js";
+
+dotenv.config();
 
 async function bootstrap() {
   const environment = getEnvironment();

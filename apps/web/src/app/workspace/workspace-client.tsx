@@ -6,9 +6,11 @@ import {
   LayoutDashboard,
   LoaderCircle,
   LogOut,
+  ReceiptText,
   ShieldCheck,
   Users,
 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -27,6 +29,12 @@ type SessionProfile = {
 };
 
 const nextModules = [
+  {
+    name: "Invoices",
+    description: "Create, calculate, issue, and print customer invoices",
+    icon: ReceiptText,
+    href: "/workspace/invoices" as const,
+  },
   {
     name: "Customers",
     description: "Customer records and relationship history",
@@ -148,19 +156,16 @@ export function WorkspaceClient() {
 
           <aside className="min-w-0 rounded-2xl bg-brand-primary-dark p-5 text-white shadow-xl shadow-brand-primary/10 sm:p-8">
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-brand-gold-bright">
-              Next vertical slice
+              Business tools
             </p>
             <h2 className="mt-2 font-display text-2xl font-bold">
-              CRM and event intake
+              Run the next workflow
             </h2>
             <div className="mt-6 space-y-3">
               {nextModules.map((module) => {
                 const Icon = module.icon;
-                return (
-                  <div
-                    key={module.name}
-                    className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3.5 sm:p-4"
-                  >
+                const content = (
+                  <>
                     <Icon className="size-5 shrink-0 text-brand-gold-bright" />
                     <div className="min-w-0 flex-1">
                       <p className="font-bold">{module.name}</p>
@@ -169,6 +174,22 @@ export function WorkspaceClient() {
                       </p>
                     </div>
                     <ChevronRight className="size-4 text-white/35" />
+                  </>
+                );
+                return module.href ? (
+                  <Link
+                    key={module.name}
+                    href={module.href}
+                    className="flex min-h-16 items-center gap-3 rounded-xl border border-brand-gold/25 bg-white/10 p-3.5 transition hover:border-brand-gold/55 hover:bg-white/[0.14] sm:p-4"
+                  >
+                    {content}
+                  </Link>
+                ) : (
+                  <div
+                    key={module.name}
+                    className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3.5 opacity-70 sm:p-4"
+                  >
+                    {content}
                   </div>
                 );
               })}

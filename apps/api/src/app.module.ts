@@ -15,10 +15,18 @@ import { RateLimitGuard } from "./common/guards/rate-limit.guard.js";
 import { CorrelationIdMiddleware } from "./common/middleware/correlation-id.middleware.js";
 import { DatabaseModule } from "./database/database.module.js";
 import { HealthModule } from "./health/health.module.js";
+import { InvoicesModule } from "./invoices/invoices.module.js";
 import { UsersModule } from "./users/users.module.js";
 
 @Module({
-  imports: [DatabaseModule, AuditModule, AuthModule, HealthModule, UsersModule],
+  imports: [
+    DatabaseModule,
+    AuditModule,
+    AuthModule,
+    HealthModule,
+    UsersModule,
+    InvoicesModule,
+  ],
   providers: [
     Reflector,
     { provide: APP_GUARD, useClass: RateLimitGuard },
